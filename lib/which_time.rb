@@ -8,9 +8,11 @@ class WhichTime
 
   attr_accessor :location, :timezone, :address, :api_key
 
+  GEOLOCATE_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
+  TIMEZONE_URL  = 'https://maps.googleapis.com/maps/api/timezone/json'
+
   def initialize address, api_key
-    @address = address
-    @api_key = api_key
+    @address, @api_key = address, api_key
   end
 
   def location
@@ -38,29 +40,18 @@ class WhichTime
   end
 
   def geo_request
-    url_path = 'https://maps.googleapis.com/maps/api/geocode/json'
-    params   = {
-      address: address.gsub(' ','+'),
-      key:     api_key
-    }
-    api_request(url_path, params)
+    params = {address: address.gsub(' ','+'), key: api_key}
+    api_request(GEOLOCATE_URL, params)
   end
 
   def tz_request
-    url_path = 'https://maps.googleapis.com/maps/api/timezone/json'
-    params   = {
-      timestamp: Time.now.to_i,
-      location:  "#{lat},#{lng}",
-      key:       api_key
-    }
-    api_request(url_path, params)
+    params = {timestamp: Time.now.to_i, location: "#{lat},#{lng}", key: api_key}
+    api_request(TIMEZONE_URL, params)
   end
 
   def api_request api_url, params
-    url       = URI.parse(api_url)
-    url.query = URI.encode_www_form(params)
-    response  = Net::HTTP.get(url)
-    JSON.parse(response)
+    url, url.query = URI.parse(api_url), URI.encode_www_form(params)
+    JSON.parse(Net::HTTP.get(url))
   end
 
 end
