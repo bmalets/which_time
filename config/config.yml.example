@@ -1,0 +1,19 @@
+############################################## NEED TO BE UPDATED MANUALLY #############################################
+
+api_key: "API_KEY_OF_YOUR_GOOGLE_APP_WITH_GEOCODING_AND_TIMEZONE_API_PERMISSIONS"
+
+############################################## IS STANDARD CONFIGURATIONS ##############################################
+
+geocoding_api:
+  url: "https://maps.googleapis.com/maps/api/geocode/json"
+  params:
+    - address
+    - key
+
+timezone_api:
+  url: "https://maps.googleapis.com/maps/api/timezone/json"
+  params:
+    - location
+    - timestamp
+    - language
+    - key
