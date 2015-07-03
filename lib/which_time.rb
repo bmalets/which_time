@@ -1,33 +1,67 @@
 require "which_time/version"
 require 'net/http'
-require 'yaml'
+require 'uri'
 require 'tzinfo'
 
 class WhichTime
 
-  def self.in address
-    coordinates = location_of address.gsub(' ','+')
-    timezone    = timezone_of coordinates.values
-    TZInfo::Timezone.get(timezone).now
+  attr_accessor :location, :timezone
+
+  def initialize address, api_key
+    @address = address
+    @api_key = api_key
+  end
+
+  def location
+    @location ||= geo_request['results'][0]['geometry']['location']
+  end
+
+  def lat
+    location['lat']
+  end
+
+  def lng
+    location['lng']
+  end
+
+  def timezone
+    @timezone ||= tz_request['timeZoneId']
+  end
+
+  def time
+    timezone.now
+  end
+
+  def self.in address, api_key
+    whichtime = self.class.new(address, api_key)
+    whichtime.time
   end
 
   private
 
-  def self.config
-    gem_root = Gem::Specification.find_by_name("which_time")
-    YAML.load_file("#{gem_root}/config/config.yml").inspect
+  def geo_request
+    url_path = 'https://maps.googleapis.com/maps/api/geocode/json'
+    params   = {
+      address: @address.gsub(' ','+'),
+      key:     @api_key
+    }
+    api_request(url_path, params)
   end
 
-  def self.location_of query
-    url = "#{config['geocoding_api']['url']}?address=#{query}&key=#{config['api_key']}"
-    Net::HTTP.get(url)['results'][0]['geometry']['location']
+  def tz_request
+    url_path = 'https://maps.googleapis.com/maps/api/timezone/json'
+    params   = {
+      timestamp: Time.now.to_i,
+      location:  "#{lat},#{lng}",
+      key:       @api_key
+    }
+    api_request(url_path, params)
   end
 
-  def self.timezone_of lat, lng
-    url = "#{config['timezone_api']['url']}?location=#{lat},#{lng}&timestamp=#{Time.now.to_i}&key=#{config['api_key']}"
-    Net::HTTP.get(url)['timeZoneId']
+  def api_request api_url, params
+    url       = URI.parse(api_url)
+    url.query = URI.encode_www_form(params)
+    Net::HTTP.get(url)
   end
 
 end
-
-WhichTime.in "Lviv, UA"
