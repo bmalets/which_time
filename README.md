@@ -1,6 +1,6 @@
 # WhichTime
  
-  Gem which gives you a simple way to find local time (timezone) of some place/address/city/region/country.
+>Gem which gives you a simple way to find local time (timezone) of some place, address, city, region country or any other location which you want.
 
 ## Installation
 
