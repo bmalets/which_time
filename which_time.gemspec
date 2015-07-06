@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["b.malets@gmail.com"]
   spec.summary       = %q{ search local time by your location }
   spec.description   = %q{ this gem provides a possibility to search local time by street/place_name/city/region/country e.g. }
-  spec.homepage      = "https://github.com/bmalets/which_time"
+  spec.homepage      = "https://github.com/bmalets/which_time/wiki"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files -z`.split("\x0")
