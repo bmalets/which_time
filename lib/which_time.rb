@@ -1,4 +1,4 @@
-%W( which_time/version net/http uri net/http json tzinfo).each{ |lib| require lib }
+%W( which_time/version net/http uri net/http json tzinfo active_support/time).each{ |lib| require lib }
 
 class WhichTime
 
@@ -19,7 +19,7 @@ class WhichTime
   end
 
   def time
-    TZInfo::Timezone.get(timezone).local_to_utc Time.at(@timestamp)
+    Time.at(@timestamp).in_time_zone timezone
   end
 
   def self.in address, api_key, time=Time.new

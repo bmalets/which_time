@@ -20,3 +20,4 @@ tmp
 *.o
 *.a
 mkmf.log2
+.DS_Store
