@@ -1,57 +1,47 @@
-require "which_time/version"
-require 'net/http'
-require 'uri'
-require 'json'
-require 'tzinfo'
+%W( which_time/version net/http uri net/http json tzinfo).each{ |lib| require lib }
 
 class WhichTime
 
-  attr_accessor :location, :timezone, :address, :api_key
-
-  GEOLOCATE_URL = 'https://maps.googleapis.com/maps/api/geocode/json'
-  TIMEZONE_URL  = 'https://maps.googleapis.com/maps/api/timezone/json'
-
-  def initialize address, api_key
-    @address, @api_key = address, api_key
+  def initialize address, api_key, time=Time.now
+    @address, @api_key, @timestamp = address.gsub(' ','+'), api_key, time.to_i
   end
 
   def location
-    @location ||= geo_request['results'][0]['geometry']['location']
+    @location ||= get_location['results'][0]['geometry']['location']
   end
 
-  def lat
-    location['lat']
-  end
-
-  def lng
-    location['lng']
+  def coordinates
+    location.values.join(',')
   end
 
   def timezone
-    @timezone ||= tz_request['timeZoneId']
+    @timezone ||= get_timezone['timeZoneId']
   end
 
   def time
-    TZInfo::Timezone.get(timezone).now
+    TZInfo::Timezone.get(timezone).local_to_utc Time.at(@timestamp)
   end
 
-  def self.in address, api_key
-    new(address, api_key).time
+  def self.in address, api_key, time=Time.new
+    new(address, api_key, time).time
   end
 
-  def geo_request
-    params = {address: address.gsub(' ','+'), key: api_key}
-    api_request(GEOLOCATE_URL, params)
+  private
+
+  def request type, params
+    Net::HTTP.get URI.parse("https://maps.googleapis.com/maps/api/#{type}/json?#{URI.encode_www_form(params)}")
   end
 
-  def tz_request
-    params = {timestamp: Time.now.to_i, location: "#{lat},#{lng}", key: api_key}
-    api_request(TIMEZONE_URL, params)
+  def response type, params
+    JSON.parse request(type, params)
   end
 
-  def api_request api_url, params
-    url, url.query = URI.parse(api_url), URI.encode_www_form(params)
-    JSON.parse(Net::HTTP.get(url))
+  def get_location 
+    response 'geocode', address: @address, key: @api_key
+  end
+
+  def get_timezone
+    response 'timezone', timestamp: @timestamp, location: coordinates, key: @api_key
   end
 
 end
