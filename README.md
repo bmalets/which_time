@@ -1,4 +1,4 @@
-# WhichTime [![Gem Version](https://badge.fury.io/rb/which_time.svg)](http://badge.fury.io/rb/which_time)
+# WhichTime [![Gem Version](https://badge.fury.io/rb/which_time.svg)](http://badge.fury.io/rb/which_time) [![Code Climate](https://codeclimate.com/github/bmalets/which_time/badges/gpa.svg)](https://codeclimate.com/github/bmalets/which_time)
  
 >Gem which gives you a simple way to find local time (timezone) of some place, address, city, region country or any other location which you want.
 
