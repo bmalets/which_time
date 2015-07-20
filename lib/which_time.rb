@@ -1,9 +1,12 @@
-%W( which_time/version net/http uri net/http json tzinfo active_support/time).each{ |lib| require lib }
+%W( which_time/version uri net/http json tzinfo active_support/time).each{ |lib| require lib }
 
 class WhichTime
 
-  def initialize address, api_key, time=Time.now
-    @address, @api_key, @timestamp = address.gsub(' ','+'), api_key, time.to_i
+  def initialize address, params={api_key: nil, time: Time.now, http_proxy: nil}
+    @address   = address
+    @api_key   = params[:api_key]
+    @timestamp = params[:time].to_i 
+    @proxy     = params[:http_proxy]
   end
 
   def location
@@ -22,14 +25,37 @@ class WhichTime
     Time.at(@timestamp).in_time_zone timezone
   end
 
-  def self.in address, api_key, time=Time.new
-    new(address, api_key, time).time
+  def self.in address, params={api_key: nil, time: Time.now, http_proxy: nil}
+    new(address, params).time
+  end
+
+  def proxy_host   
+    URI.parse(@proxy).host if @proxy
+  end
+
+  def proxy_port    
+    URI.parse(@proxy).port if @proxy
   end
 
   private
 
+  def with_proxy uri_path
+    http = Net::HTTP.new('maps.googleapis.com', 443, proxy_host, proxy_port)
+    http.use_ssl     = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.get( uri_path.request_uri ).body
+  end
+
+  def without_proxy uri_path
+    Net::HTTP.get uri_path
+  end
+
+  def request_uri type, params
+    URI.parse("https://maps.googleapis.com/maps/api/#{type}/json?#{URI.encode_www_form(params)}")
+  end
+
   def request type, params
-    Net::HTTP.get URI.parse("https://maps.googleapis.com/maps/api/#{type}/json?#{URI.encode_www_form(params)}")
+    send (@proxy ? 'with_proxy' : 'without_proxy'), request_uri(type, params)
   end
 
   def response type, params
@@ -37,11 +63,15 @@ class WhichTime
   end
 
   def get_location 
-    response 'geocode', address: @address, key: @api_key
+    response 'geocode', address: @address.gsub(' ','+'), key: @api_key
   end
 
   def get_timezone
-    response 'timezone', timestamp: @timestamp, location: coordinates, key: @api_key
+    begin
+      response 'timezone', timestamp: @timestamp, location: coordinates, key: @api_key
+    rescue
+      ""
+    end
   end
 
 end

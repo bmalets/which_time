@@ -3,14 +3,14 @@ require 'spec_helper'
 describe WhichTime do
 
   let(:address)  { "Kyiv, str. Khmelnitskogo 3, pub 'Naturlih'" }
-  let(:api_key)  { "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE" }
+  let(:api_key)  { "AIzaSyC9CndnQRSgcI2qT_YCEXwpqwmv8Fml0p0" }
   let(:sometime) { Time.new(2015, 7, 5, 9, 10) }
 
-  let(:whichtime) { WhichTime.new( address, api_key, sometime ) }
+  let(:whichtime) { WhichTime.new( address, api_key: api_key, time: sometime ) }
 
   it "should be whichtime object with correct instance variables" do
-    expect( whichtime.instance_variable_get("@address")   ).to eq( "Kyiv,+str.+Khmelnitskogo+3,+pub+'Naturlih'" )
-    expect( whichtime.instance_variable_get("@api_key")   ).to eq( "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE" )
+    expect( whichtime.instance_variable_get("@address")   ).to eq( address )
+    expect( whichtime.instance_variable_get("@api_key")   ).to eq( api_key )
     expect( whichtime.instance_variable_get("@timestamp") ).to eq( sometime.to_i )
   end
 
@@ -67,7 +67,7 @@ describe WhichTime do
   end
 
   it "should return correct time by address" do
-    result = WhichTime.in(address, api_key, sometime)
+    result = WhichTime.in(address, api_key: api_key, time: sometime)
     expect( result.strftime("%Y-%m-%d %H:%M:%S") ).to eq( sometime.strftime("%Y-%m-%d %H:%M:%S") )
   end
 
