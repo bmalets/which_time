@@ -38,7 +38,7 @@ WhichTime.in somewhere, api_key: google_api_key, time: your_time, http_proxy: pr
 - "somewhere"      - may be an address or some place ("Lviv city, Naykova str." or "'Naturlih' pub, Kyiv" e.g.)
 - "google_api_key" - API_KEY of Google application with an access to TimeZone and Geocoding API
 - "your_time"      - is not mandatory (Time.now is default)
-- "proxy_url"      - proxy host with port ( 'https://proxy_host.com:proxy_port' etc.) 
+- "proxy_url"      - proxy host with port ( is not mandatory, 'https://fooproxy.com:8080' etc.) 
 
 examples:
 ```
