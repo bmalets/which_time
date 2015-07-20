@@ -25,46 +25,55 @@ Manually:
 
 ### 1. Get local time of some address
 ```
-WhichTime.in( somewhere, google_api_key, your_time )
+WhichTime.in somewhere, api_key: google_api_key
 ```
-- "somewhere" - may be an address or some place ("Lviv city, Naykova str." or "'Naturlih' pub, Kyiv" e.g.)
+or
+```
+WhichTime.in somewhere, api_key: google_api_key, time: your_time
+```
+or
+```
+WhichTime.in somewhere, api_key: google_api_key, time: your_time, http_proxy: proxy_url
+```
+- "somewhere"      - may be an address or some place ("Lviv city, Naykova str." or "'Naturlih' pub, Kyiv" e.g.)
 - "google_api_key" - API_KEY of Google application with an access to TimeZone and Geocoding API
-- "your_time" - is not mandatory (Time.now is default)
+- "your_time"      - is not mandatory (Time.now is default)
+- "proxy_url"      - proxy host with port ( 'https://proxy_host.com:proxy_port' etc.) 
 
 examples:
 ```
-  WhichTime.in("Kyiv, pub 'Naturlih'", "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE")
+  WhichTime.in "Kyiv, pub 'Naturlih'", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE"
   # => 2015-07-06 03:53:10 +0300
-  WhichTime.in("Kyiv", "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE", 2.days.ago)
+  WhichTime.in "Kyiv", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE", time: 2.days.ago
   # => 2015-07-04 03:53:10 +0300
 ```
 
 ### 2. Get local time of some address (variant 2)
 ```
-WhichTime.new( somewhere, google_api_key, your_time ).time
+WhichTime.new( somewhere, api_key: google_api_key, time: your_time ).time
 # => 2015-07-06 03:53:10 +0300 
 ```
 
 ### 3. Get timezone of some place/address/city/country
 ```
-WhichTime.new( somewhere, google_api_key ).timezone
+WhichTime.new( somewhere, api_key: google_api_key ).timezone
 ```
 examples:
 ```
-  WhichTime.new("Kyiv, pub 'Naturlih'", "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
-  WhichTime.in("Kyiv", "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
+  WhichTime.new("Kyiv, pub 'Naturlih'", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
+  WhichTime.in("Kyiv", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
   # => "Europe/Kiev"
 ```
 
 ### 4. Get coordinates of some place/address/location
 ```
-WhichTime.new( somewhere, google_api_key ).location
+WhichTime.new( somewhere, api_key: google_api_key ).location
 # => {"lat"=>50.4501, "lng"=>30.5234}
 ```
 
 ### 5. Get coordinates of some place/address/location (variant 2)
 ```
-WhichTime.new( somewhere, google_api_key ).coordinates
+WhichTime.new( somewhere, api_key: google_api_key ).coordinates
 # => "50.4501,30.5234"
 ```
 
