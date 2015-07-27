@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Which time : Gem which gives you a simple way to find local time (timezone) of some place, address, city, region country or any other location which you want.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Which time</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/bmalets/which_time">View on GitHub</a>
+
+          <h1 id="project_title">Which time</h1>
+          <h2 id="project_tagline">Gem which gives you a simple way to find local time (timezone) of some place, address, city, region country or any other location which you want.</h2>
+
+            <section id="downloads">
+              <a class="zip_download_link" href="https://github.com/bmalets/which_time/zipball/master">Download this project as a .zip file</a>
+              <a class="tar_download_link" href="https://github.com/bmalets/which_time/tarball/master">Download this project as a tar.gz file</a>
+            </section>
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <p><a href="http://badge.fury.io/rb/which_time"><img src="https://badge.fury.io/rb/which_time.svg" alt="Gem Version"></a> <a href="https://codeclimate.com/github/bmalets/which_time"><img src="https://codeclimate.com/github/bmalets/which_time/badges/gpa.svg" alt="Code Climate"></a> <a href="https://codeclimate.com/github/bmalets/which_time/coverage"><img src="https://codeclimate.com/github/bmalets/which_time/badges/coverage.svg" alt="Test Coverage"></a></p>
+
+<h2>
+<a id="installation" class="anchor" href="#installation" aria-hidden="true"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<ol>
+<li>Create google app for your project to use Google API.</li>
+<li>Enable <code>Geocoding API</code> and <code>TimeZone API</code> access for your google app.</li>
+<li>Get API_KEY from settings of your google app 
+(something like <code>"AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE"</code>). </li>
+<li>Set up your google app for work (in development mode usage of API is limited: only 2500 requests per day)</li>
+<li>
+<p>Add this line to your application's Gemfile:</p>
+
+<p>gem 'which_time'</p>
+</li>
+</ol>
+
+<p>And then execute:</p>
+
+<pre><code>$ bundle
+</code></pre>
+
+<p>Manually:</p>
+
+<pre><code>gem install which_time
+</code></pre>
+
+<h2>
+<a id="usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<h3>
+<a id="1-get-local-time-of-some-address" class="anchor" href="#1-get-local-time-of-some-address" aria-hidden="true"><span class="octicon octicon-link"></span></a>1. Get local time of some address</h3>
+
+<pre><code>WhichTime.in somewhere, api_key: google_api_key
+</code></pre>
+
+<p>or</p>
+
+<pre><code>WhichTime.in somewhere, api_key: google_api_key, time: your_time
+</code></pre>
+
+<p>or</p>
+
+<pre><code>WhichTime.in somewhere, api_key: google_api_key, time: your_time, http_proxy: proxy_url
+</code></pre>
+
+<ul>
+<li>"somewhere"      - may be an address or some place ("Lviv city, Naykova str." or "'Naturlih' pub, Kyiv" e.g.)</li>
+<li>"google_api_key" - API_KEY of Google application with an access to TimeZone and Geocoding API</li>
+<li>"your_time"      - is not mandatory (Time.now is default)</li>
+<li>"proxy_url"      - proxy host with port ( is not mandatory, '<a href="https://fooproxy.com:8080">https://fooproxy.com:8080</a>' etc.) </li>
+</ul>
+
+<p>examples:</p>
+
+<pre><code>  WhichTime.in "Kyiv, pub 'Naturlih'", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE"
+  # =&gt; 2015-07-06 03:53:10 +0300
+  WhichTime.in "Kyiv", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE", time: 2.days.ago
+  # =&gt; 2015-07-04 03:53:10 +0300
+</code></pre>
+
+<h3>
+<a id="2-get-local-time-of-some-address-variant-2" class="anchor" href="#2-get-local-time-of-some-address-variant-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>2. Get local time of some address (variant 2)</h3>
+
+<pre><code>WhichTime.new( somewhere, api_key: google_api_key, time: your_time ).time
+# =&gt; 2015-07-06 03:53:10 +0300 
+</code></pre>
+
+<h3>
+<a id="3-get-timezone-of-some-placeaddresscitycountry" class="anchor" href="#3-get-timezone-of-some-placeaddresscitycountry" aria-hidden="true"><span class="octicon octicon-link"></span></a>3. Get timezone of some place/address/city/country</h3>
+
+<pre><code>WhichTime.new( somewhere, api_key: google_api_key ).timezone
+</code></pre>
+
+<p>examples:</p>
+
+<pre><code>  WhichTime.new("Kyiv, pub 'Naturlih'", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
+  WhichTime.in("Kyiv", api_key: "AIzaSyCqfXRRJ1d8mCS_I0Kcs4XnaZ9KYRUrJVE").timezone
+  # =&gt; "Europe/Kiev"
+</code></pre>
+
+<h3>
+<a id="4-get-coordinates-of-some-placeaddresslocation" class="anchor" href="#4-get-coordinates-of-some-placeaddresslocation" aria-hidden="true"><span class="octicon octicon-link"></span></a>4. Get coordinates of some place/address/location</h3>
+
+<pre><code>WhichTime.new( somewhere, api_key: google_api_key ).location
+# =&gt; {"lat"=&gt;50.4501, "lng"=&gt;30.5234}
+</code></pre>
+
+<h3>
+<a id="5-get-coordinates-of-some-placeaddresslocation-variant-2" class="anchor" href="#5-get-coordinates-of-some-placeaddresslocation-variant-2" aria-hidden="true"><span class="octicon octicon-link"></span></a>5. Get coordinates of some place/address/location (variant 2)</h3>
+
+<pre><code>WhichTime.new( somewhere, api_key: google_api_key ).coordinates
+# =&gt; "50.4501,30.5234"
+</code></pre>
+
+<h2>
+<a id="contributing" class="anchor" href="#contributing" aria-hidden="true"><span class="octicon octicon-link"></span></a>Contributing</h2>
+
+<ol>
+<li>Fork it ( <a href="https://github.com/bmalets/which_time/fork">https://github.com/bmalets/which_time/fork</a> )</li>
+<li>Create your feature branch (<code>git checkout -b my-new-feature</code>)</li>
+<li>Commit your changes (<code>git commit -am 'Add some feature'</code>)</li>
+<li>Push to the branch (<code>git push origin my-new-feature</code>)</li>
+<li>Create a new Pull Request</li>
+</ol>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p class="copyright">Which time maintained by <a href="https://github.com/bmalets">bmalets</a></p>
+        <p>Published with <a href="https://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
