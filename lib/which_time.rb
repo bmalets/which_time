@@ -40,14 +40,11 @@ class WhichTime
   private
 
   def with_proxy uri_path
-    http = Net::HTTP.new('maps.googleapis.com', 443, proxy_host, proxy_port)
-    http.use_ssl     = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    http.get( uri_path.request_uri ).body
+    Net::HTTP.new('maps.googleapis.com', 443, proxy_host, proxy_port)
   end
 
   def without_proxy uri_path
-    Net::HTTP.get uri_path
+    Net::HTTP.new(uri_path.host, uri_path.port)
   end
 
   def request_uri type, params
@@ -55,7 +52,11 @@ class WhichTime
   end
 
   def request type, params
-    send (@proxy ? 'with_proxy' : 'without_proxy'), request_uri(type, params)
+    path = request_uri(type, params)
+    http = @proxy ? with_proxy(path) : without_proxy(path) 
+    http.use_ssl     = true
+    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.get( path.request_uri ).body    
   end
 
   def response type, params
